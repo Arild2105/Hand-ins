@@ -15,7 +15,17 @@ jprint(all_info)
 print("input name of drink")
 
 #input and search for drink
-x=input()
+x = input()
+
+#function
+def Initial(): 
+    if x == "yes" or x == "Yes":
+        print("nice")
+    elif x == "no":
+        print("Oh!")
+    else:
+        Initial()
+    
 
 if x in '':
     x_no_space = re.sub('','%',x)
