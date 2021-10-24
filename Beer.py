@@ -5,30 +5,30 @@ import re
 #url with all drinks
 all_info = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail")).json()
 
-#prints text from all_info
+# print text from all_info
 def jprint(obj):
-    # create a formatted string of the Python JSON object
+     #create a formatted string of the Python JSON object
     textDrinks = json.dumps(obj, sort_keys=True, indent=4)
     print(textDrinks)
 jprint(all_info)
 
-print("input name of drink")
+#print("input name of drink")
 
 #input and search for drink
 x = input()
 
+if x in '':
+    x_no_space = re.sub('','%',x)
+
 #function
 def Initial(): 
+    print("Do you want a list oof all drinks?")
     if x == "yes" or x == "Yes":
         print("nice")
     elif x == "no":
         print("Oh!")
     else:
         Initial()
-    
-
-if x in '':
-    x_no_space = re.sub('','%',x)
 
 searchDrink = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + x)).json()
 
