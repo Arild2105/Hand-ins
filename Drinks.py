@@ -1,92 +1,151 @@
-import requests
+import requests 
 import json
 import re
 
 def Initial(): 
-    print("Do you want a list of all drinks?")
+    print("Hallo, I am gonna help you find your drink today :) ") 
+    print("If at any point during our conversation, you want to stop, just write 'stop', and i will see you the next time.")
+    print("\nDo you want a list of all drinks?")
+    
     initial_input = input()
-    if initial_input == "yes" or initial_input == "Yes":
-        print("Alright")
-        yes_list_of_drinks()
-    elif initial_input == "no":
-        print("Very well")
-        no_search_by_ingredient()
+    initial_input_lowerCase = initial_input.lower()
+    
+    if initial_input_lowerCase == "yes":
+        print("\nAlright.")
+        list_of_drinks()
+    
+    elif initial_input_lowerCase == "no":
+        print("\nVery well.")
+        search_by_ingredient()
+    
+    elif initial_input_lowerCase == "stop":
+        stop_conversation()         
+    
     else:
         print("please answer yes or no!")
-        initial_input = input()
+        Initial()
 
-def yes_list_of_drinks():
+def list_of_drinks():
     all_drinks = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail")).json()
     list_drinks = all_drinks["drinks"]
+    
     for drink in list_drinks:
+        print("\n")
         print(drink["strDrink"])
         print(drink["strDrinkThumb"])
+        
+    specific_drink()
+
+def search_by_ingredient():
+    print("\nDo you want to search by ingredient?")
+    
+    ingredient_input = input()
+    ingredient_input_lowerCase = ingredient_input.lower()
+    
+    if ingredient_input_lowerCase in '':
+        ingredient_input_no_space = re.sub('','%',ingredient_input_lowerCase)          
+    
+    if ingredient_input_lowerCase == "yes":
+        print("\nAlright, write an ingredient")
+        
+        ingredient_input_lowerCase = input()
+        
+        if ingredient_input_lowerCase == True:
+            search_ingredient = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient_input_lowerCase)).json()
+        
+        elif ingredient_input_lowerCase == "stop":
+            stop_conversation() 
+        
+        else:
+            print("\nThis ingredient does not exist, please try again... ")
+            search_by_ingredient()
+
+        searched_ingredient = search_ingredient["drinks"]
+        
+        for ingredient in searched_ingredient:
+            print("\n")
+            print(ingredient["strDrink"])
+            print(ingredient["strDrinkThumb"])
+        
+        specific_drink()
+
+    elif ingredient_input_lowerCase == "no":
+        search_by_name()
+
+    elif ingredient_input_lowerCase == "stop":
+        stop_conversation()
+
+    else:
+        print("please answer yes or no!")
+        search_by_ingredient() 
+
+def search_by_name():
+    print("\nDo you want to search by name?")
+    
+    name_input = input()
+    name_input_lowerCase = name_input.lower()
+    
+    if name_input_lowerCase == "yes":
+        print("\nAlright.")
+        specific_drink()
+    
+    elif name_input_lowerCase == "no":
+        print("\nThen we can't help you...")
+        stop_conversation()
+    
+    elif name_input_lowerCase == "stop":
+        stop_conversation()    
+    
+    else:
+        print("please answer yes or no!")
+        search_by_name()
 
 def specific_drink():
-    print("Which drink do you want?")
-    last_input = input()
+    print("\nWhich drink do you want?")
+    
+    choose_specific_drink = input()
+    choose_specific_drink_lowerCase = choose_specific_drink.lower() 
+    
+    if choose_specific_drink_lowerCase in '':
+        choose_specific_drink_no_space = re.sub('','%',choose_specific_drink_lowerCase)
 
-    if last_input in '':
-        last_input_no_space = re.sub('','%',last_input)
-
-    search_drink = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + last_input)).json()
+    if choose_specific_drink_lowerCase == True: 
+        search_drink = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + choose_specific_drink_lowerCase)).json()
+    
+    elif choose_specific_drink_lowerCase == "stop":
+        stop_conversation()
+    
+    else:
+        print("This drink does not exist, please try again.")
+        specific_drink() 
 
     searched_drink = search_drink["drinks"]
+    
     for drink in searched_drink:
+        print("\n")
         print(drink["idDrink"])
         print(drink["strDrink"])
         print(drink["strInstructions"])
         print(drink["strAlcoholic"])
         print(drink["strGlass"])
         print(drink["strDrinkThumb"])
-
-def no_search_by_ingredient():
-    print("Do you want to search by ingredients?")
-    ingredient_input = input()
-    if ingredient_input == "yes" or ingredient_input == "Yes":
-        print("Alright, write ingredient")
-        ingredient_input = input()
-        search_ingredient = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient_input)).json()
-
-        searched_ingredient = search_ingredient["drinks"]
-        for ingredient in searched_ingredient:
-            print(ingredient["strDrink"])
-            print(ingredient["strDrinkThumb"])
-
-    elif ingredient_input == "no":
-        no_search_by_name()
-
-    else:
-        print("please answer yes or no!")
-        ingredient_input = input()
-
-def no_search_by_name():
-    print("Do you want to search by name?")
-    name_input = input()
-    if name_input == "yes":
-        print("alright")
-    elif name_input == "no":
-        print("Then we can't help you")
-
-    else:
-        print("please answer yes or no!")
-        name_input = input() 
+    
+    stop_conversation()
 
 def stop_conversation():
-    print("do you want to go back to the beginning?")
+    print("\nDo you want to go back to the beginning?")
+    
     stop_input = input()
-    if stop_input == "yes":
+    stop_input_lowerCase = stop_input.lower()
+    
+    if stop_input_lowerCase == "yes":
         Initial()
-    elif stop_input == "no":
-        print("alright. See you later")
+    
+    elif stop_input_lowerCase == "no":
+        print("\nAlright. See you later :) ")
+    
     else:
-        print("please make a valid choice")
-
+        print("Please make a valid choice.")
+        stop_conversation()
 
 Initial()
-specific_drink()
-stop_conversation()
-
-#Invalid input - drinks findes ikke
-#if stop then stop conversation
-#Stavemåder - capslock - stort eller småt
