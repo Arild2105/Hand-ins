@@ -1,5 +1,4 @@
-import requests 
-import json
+import requests
 import re
 
 def Initial(): 
@@ -50,23 +49,14 @@ def search_by_ingredient():
         
         ingredient_input_lowerCase = input()
         
-        if ingredient_input_lowerCase == True:
-            search_ingredient = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient_input_lowerCase)).json()
-        
-        elif ingredient_input_lowerCase == "stop":
-            stop_conversation() 
-        
-        else:
-            print("\nThis ingredient does not exist, please try again... ")
-            search_by_ingredient()
-
+        search_ingredient = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient_input_lowerCase)).json()
         searched_ingredient = search_ingredient["drinks"]
         
         for ingredient in searched_ingredient:
             print("\n")
             print(ingredient["strDrink"])
             print(ingredient["strDrinkThumb"])
-        
+            
         specific_drink()
 
     elif ingredient_input_lowerCase == "no":
@@ -102,23 +92,17 @@ def search_by_name():
 
 def specific_drink():
     print("\nWhich drink do you want?")
-    
+  
     choose_specific_drink = input()
     choose_specific_drink_lowerCase = choose_specific_drink.lower() 
     
     if choose_specific_drink_lowerCase in '':
         choose_specific_drink_no_space = re.sub('','%',choose_specific_drink_lowerCase)
 
-    if choose_specific_drink_lowerCase == True: 
-        search_drink = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + choose_specific_drink_lowerCase)).json()
-    
-    elif choose_specific_drink_lowerCase == "stop":
+    if choose_specific_drink_lowerCase == "stop":
         stop_conversation()
-    
-    else:
-        print("This drink does not exist, please try again.")
-        specific_drink() 
 
+    search_drink = (requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + choose_specific_drink_lowerCase)).json()
     searched_drink = search_drink["drinks"]
     
     for drink in searched_drink:
